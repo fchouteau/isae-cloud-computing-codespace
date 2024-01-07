@@ -1,12 +1,12 @@
 version: '3'
 services:
   yolo:
-    image: "test-yolo-v5:dummy"
+    image: "eu.gcr.io/third-ridge-138414/yolo-v5:1.2"
     ports:
       - "8000:8000"
     hostname: yolo
   streamlit:
-    image: "test-yolo-v5-streamlit:dummy"
+    image: "eu.gcr.io/third-ridge-138414/yolo-v5-streamlit:1.5"
     ports:
       - "8501:8501"
     hostname: streamlit

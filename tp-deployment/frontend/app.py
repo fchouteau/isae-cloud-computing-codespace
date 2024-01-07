@@ -117,7 +117,8 @@ def draw_preds(image: Image, detections: [Detection]):
         label = "{} {:.2f}".format(predicted_class, score)
 
         draw = ImageDraw.Draw(image_with_preds)
-        label_size = draw.textsize(label, font)
+        label_size = draw.textbbox((0, 0), label, font=font)
+        label_size = label_size[2], label_size[3]
 
         top = max(0, np.floor(top + 0.5).astype("int32"))
         left = max(0, np.floor(left + 0.5).astype("int32"))
@@ -190,7 +191,7 @@ model_name = st.radio(label="Model Name", options=["yolov5s", "yolov5m", "yolov5
 
 st.markdown("Upload an image")
 
-image_file = st.file_uploader(label="Image File", type=["png", "jpg", "tif"])
+image_file = st.file_uploader(label="Image File", type=["png", "jpg", "jpeg", "tif"])
 
 confidence_threshold = st.slider(label="Confidence filter", min_value=0.0, max_value=1.0, value=0.0, step=0.05)
 

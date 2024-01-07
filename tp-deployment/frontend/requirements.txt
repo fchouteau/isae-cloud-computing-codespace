@@ -1,5 +1,6 @@
-Pillow
+altair<5.0.0
 matplotlib
 numpy
-streamlit==1.17.0
+Pillow
 pydantic<2.0.0
+streamlit==1.17.0
