@@ -3,7 +3,8 @@ RUN apt-get update && apt-get install -y ffmpeg libsm6 libxext6
 
 COPY requirements.txt /tmp/
 
-RUN pip install -r /tmp/requirements.txt
+RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && \ 
+    pip install -r /tmp/requirements.txt
 
 WORKDIR /app/
 ENV TORCH_HOME="/app/"
