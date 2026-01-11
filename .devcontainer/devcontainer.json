@@ -1,11 +1,12 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:4",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
   "hostRequirements": {
     "cpus": 4
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "./install.sh",
+  "updateContentCommand": "",
   "postCreateCommand": "",
+  "postStartCommand": "chmod +x install.sh && ./install.sh",
   "customizations": {
     "codespaces": {
       "openFiles": []

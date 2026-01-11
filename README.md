@@ -2,7 +2,11 @@
 
 ## User Notes
 
-Start a GitHub Codespace from this repository to get all the resources required to do the hands-on exercises.
+This codespace is intended for use with the Data Engineering class located [SupaeroDataScience/DE](https://github.com/SupaeroDataScience/DE), most notably the data computation section.
+
+The class resources are available at the following [website](https://supaerodatascience.github.io/DE/1_1_overview.html).
+
+Start a GitHub Codespace from this repository to get all the resources required to do the hands-on exercises as well as a computing environment pre-configured.
 
 ## Developer Notes: Dev Container Configuration
 
