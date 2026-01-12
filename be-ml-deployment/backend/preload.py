@@ -1,8 +1,9 @@
 """
-This scripts download the models inside the dockerfile to avoid downloading them when preloading the application
+This script downloads the YOLO v11 models inside the dockerfile to avoid downloading them at runtime
 """
-import torch
+from ultralytics import YOLO
 
-_ = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
-_ = torch.hub.load("ultralytics/yolov5", "yolov5m", pretrained=True)
-_ = torch.hub.load("ultralytics/yolov5", "yolov5l", pretrained=True)
+# Download and cache YOLO v11 models
+_ = YOLO("yolo11n.pt")
+_ = YOLO("yolo11s.pt")
+_ = YOLO("yolo11m.pt")

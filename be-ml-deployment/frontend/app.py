@@ -149,11 +149,11 @@ def draw_preds(image: Image, detections: [Detection]):
 
 # ---- Streamlit App ---
 
-st.title("Yolo v5 Companion App")
+st.title("YOLO v11 Companion App")
 
 st.markdown(
     "A super nice companion application to send requests and parse results\n"
-    "We wrap https://pytorch.org/hub/ultralytics_yolov5/"
+    "We wrap https://docs.ultralytics.com/models/yolo11/"
 )
 
 # ---- Sidebar ----
@@ -184,10 +184,10 @@ if st.sidebar.button("Send 'is alive' to IP"):
 # ---- Main window ----
 
 st.markdown("## Inputs")
-st.markdown("Select your model (Small, Medium or Large)")
+st.markdown("Select your model (Nano, Small or Medium)")
 
 # Data input
-model_name = st.radio(label="Model Name", options=["yolov5s", "yolov5m", "yolov5l"])
+model_name = st.radio(label="Model Name", options=["yolo11n", "yolo11s", "yolo11m"])
 
 st.markdown("Upload an image")
 

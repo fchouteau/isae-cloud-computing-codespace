@@ -1,12 +1,12 @@
 version: '3'
 services:
   yolo:
-    image: "eu.gcr.io/third-ridge-138414/yolo-v5:1.2"
+    image: "europe-docker.pkg.dev/isae-sdd-481407/isae-sdd-de-2526-docker/yolo-v11-backend:1.0"
     ports:
       - "8000:8000"
     hostname: yolo
   streamlit:
-    image: "eu.gcr.io/third-ridge-138414/yolo-v5-streamlit:1.5"
+    image: "europe-docker.pkg.dev/isae-sdd-481407/isae-sdd-de-2526-docker/yolo-v11-frontend:1.0"
     ports:
       - "8501:8501"
     hostname: streamlit

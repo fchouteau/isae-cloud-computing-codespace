@@ -1,28 +1,10 @@
-# Deep Learning Requirements
-torch>=1.7.0
-torchvision
+# YOLO v11 (includes torch, numpy, pillow, etc.)
+ultralytics
 
-# FastAPI Requirements
-fastapi
-pydantic<2.0.0
-python-multipart
-uvicorn
-requests
-
-# yolo-v5 Requirements
-Cython
-Pillow
-PyYAML
-fastapi
-matplotlib
-numpy
+# Use headless OpenCV (no GUI dependencies)
 opencv-python-headless
-pandas
-pillow
-seaborn
-scipy
-tqdm
-ipython
-psutil
 
-# Your requirements
+# FastAPI
+fastapi
+uvicorn
+python-multipart

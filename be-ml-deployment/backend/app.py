@@ -4,10 +4,10 @@ import time
 from typing import List, Dict
 
 import numpy as np
-import torch
 from PIL import Image
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from ultralytics import YOLO
 
 
 class Input(BaseModel):
@@ -30,40 +30,34 @@ class Result(BaseModel):
     model: str
 
 
-def parse_prediction(prediction: np.ndarray, classes: [str]) -> Detection:
-    x0, y0, x1, y1, cnf, cls = prediction
+def parse_prediction(box, class_name: str, confidence: float) -> Detection:
+    x0, y0, x1, y1 = box
     detection = Detection(
         x_min=int(x0),
         y_min=int(y0),
         x_max=int(x1),
         y_max=int(y1),
-        confidence=round(float(cnf), 3),
-        class_name=classes[int(cls)],
+        confidence=round(float(confidence), 3),
+        class_name=class_name,
     )
     return detection
 
 
-def load_model(model_name: str) -> Dict:
-    # Load model from torch
-    model = torch.hub.load("ultralytics/yolov5", model_name, pretrained=True)
-    # Evaluation mode + Non maximum threshold
-    model = model.eval()
-
+def load_model(model_name: str) -> YOLO:
+    model = YOLO(f"{model_name}.pt")
     return model
 
 
-# %%
 app = FastAPI(
-    title="YOLO-V5 WebApp created with FastAPI",
+    title="YOLO v11 WebApp created with FastAPI",
     description="""
-                Wraps 3 different yolo-v5 models under the same RESTful API
+                Wraps 3 different YOLO v11 models under the same RESTful API
                 """,
-    version="1.1",
+    version="2.0",
 )
 
-# %%
-MODEL_NAMES = ["yolov5s", "yolov5m", "yolov5l"]
-MODELS = {}
+MODEL_NAMES = ["yolo11n", "yolo11s", "yolo11m"]
+MODELS: Dict[str, YOLO] = {}
 
 
 @app.get("/", description="return the title", response_description="title", response_model=str)
@@ -77,7 +71,7 @@ def describe() -> str:
 
 
 @app.get("/version", description="return the version", response_description="version", response_model=str)
-def describe() -> str:
+def get_version() -> str:
     return app.version
 
 
@@ -92,7 +86,7 @@ def health() -> str:
     response_description="A list of available models",
     response_model=List[str],
 )
-def models() -> [str]:
+def models() -> List[str]:
     return MODEL_NAMES
 
 
@@ -105,39 +99,39 @@ def models() -> [str]:
 def predict(inputs: Input) -> Result:
     global MODELS
 
-    # get correct model
     model_name = inputs.model
 
     if model_name not in MODEL_NAMES:
         raise HTTPException(status_code=400, detail="wrong model name, choose between {}".format(MODEL_NAMES))
 
-    # check load
     if MODELS.get(model_name) is None:
         MODELS[model_name] = load_model(model_name)
 
     model = MODELS.get(model_name)
 
-    # Get Image
-    # Decode image
     try:
         image = inputs.image.encode("utf-8")
         image = base64.b64decode(image)
         image = Image.open(io.BytesIO(image))
     except:
         raise HTTPException(status_code=400, detail="File is not an image")
-    # Convert from RGBA to RGB *to avoid alpha channels*
+
     if image.mode == "RGBA":
         image = image.convert("RGB")
 
-    # Inference
     t0 = time.time()
-    predictions = model(image, size=640)  # includes NMS
+    results = model(image, imgsz=640)
     t1 = time.time()
-    classes = predictions.names
 
-    # Post processing
-    predictions = predictions.xyxy[0].numpy()
-    detections = [parse_prediction(prediction=pred, classes=classes) for pred in predictions]
+    detections = []
+    for result in results:
+        boxes = result.boxes
+        for i in range(len(boxes)):
+            box = boxes.xyxy[i].cpu().numpy()
+            conf = boxes.conf[i].cpu().numpy()
+            cls = int(boxes.cls[i].cpu().numpy())
+            class_name = result.names[cls]
+            detections.append(parse_prediction(box=box, class_name=class_name, confidence=conf))
 
     result = Result(detections=detections, time=round(t1 - t0, 3), model=model_name)
 
